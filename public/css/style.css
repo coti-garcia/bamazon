@@ -1,3 +1,19 @@
-body{
-    background: #f1f1f1;
+header{
+    background: #232f3e;
+    color: #ffffff;
+    padding: 40px;
+    margin-bottom: 30px;
+}
+
+#cart {
+    border-left: solid 2px #ffc107;
+}
+
+#cart h2{
+    text-transform: uppercase;
+    color: #ffc107;
+}
+
+#products .card{
+    margin-bottom: 20px;
 }

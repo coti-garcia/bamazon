@@ -7,8 +7,19 @@ module.exports = function(app){
         })
     })
     app.post("/api/products", function (req, res) {
-        console.log(req.body)
-        const product = req.body
-        res.json(product);
+        let idProduct = req.body.id
+        let qty = req.body.qty
+        
+        db.Product.findOne({
+            where: {
+                id: idProduct
+            }
+        }).then(function(product){
+            if( product.stock_quantity > qty){
+                res.json(product);
+            }else{
+                res.send("The stock is not enough");
+            }
+        });
     });
 }
