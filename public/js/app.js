@@ -34,15 +34,30 @@ $(document).ready(function(){
             qty: $(`#qty-${productId}`).val().trim()
         }
         console.log(selectedProduct);
-        $.post("/api/products", selectedProduct, function(cart){
-            addToCart(cart);
-            console.log(cart);
+        $.post("/api/products", selectedProduct, function(data){
+            // addToCart(data.cart);
+            console.log(data.cart);
+            console.log(data.msg);
+            if( data.msg === "Insufficient Stock"){
+                alert("Insufficient Stock");    
+            }
             console.log(selectedProduct.qty)
+            getCart();
         });
         $(`#qty-${productId}`).val("");
+ 
     });
 
+
+    $('body').on('click', '#place-order', function(e) {
+        console.log("place order!")
+        deleteCart();
+    })
+
+
     function addToCart(cart){
+        $(".place-order").empty();
+        $(".total").empty();
         $("#cart-products").empty();
         cart.forEach(element =>{
             $("#cart-products").append(`
@@ -53,10 +68,51 @@ $(document).ready(function(){
                     <div class="col-6">
                         <h5>${element.product_name}</h5>
                         <p>${element.department_name}</p>
+                        <p>${element.qty}</p>
                         <p>$ ${element.price}</p>
                     </div>
                 <div>
             `)
         }) 
+    }
+    function getCart(){
+        $.get("/api/cart").then(function(cart){
+            let cartArr = cart
+            console.log(cartArr);
+            addToCart(cart);
+            if(cartArr.length === 0){
+                $("#cart-products").append("<p>Your cart is empty</p>")
+            }else{
+                $(".place-order").append("<button id='place-order' class='btn btn-primary' data-toggle='modal' data-target='#exampleModal'>Place Order</button>")
+            }
+            let subTotal = []
+            cartArr.forEach(element =>{
+                let itemTotal = element.qty * element.price;
+                subTotal.push(itemTotal);
+                console.log(subTotal);
+            })
+            const reducer = (accumulator, currentValue) => accumulator + currentValue;
+            const total = subTotal.reduce(reducer);
+            $(".total").append(`<h6>Total: $${total}<h6>`)
+        })
+    }
+
+    getCart(); 
+
+    function updateStock(stock) {
+        $.ajax({
+          method: "PUT",
+          url: "/api/products",
+          data: stock
+        }).then(function() {
+            console.log("send!")
+        });
+    }
+
+    function deleteCart() {
+        $.ajax({
+          method: "DELETE",
+          url: "/api/cart"
+        }).then(getCart);
     }
 }); //document.ready
