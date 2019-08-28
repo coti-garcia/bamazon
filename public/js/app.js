@@ -5,7 +5,7 @@ $(document).ready(function(){
             $("#products").append(`
             <div class="col-4" id=${element.id}>
                 <div class="card">
-                    <img src="http://via.placeholder.com/300x200" class="card-img-top" alt="...">
+                    <img src="${element.img_url}" class="card-img-top" alt="...">
                     <div class="card-body text-center">
                         <h5 class="card-title">${element.product_name}</h5>
                         <p class="card-text">${element.department_name}</p>
@@ -34,21 +34,29 @@ $(document).ready(function(){
             qty: $(`#qty-${productId}`).val().trim()
         }
         console.log(selectedProduct);
-        $.post("/api/products", selectedProduct, function(product){
-            addToCart(product);
-            console.log(product);
+        $.post("/api/products", selectedProduct, function(cart){
+            addToCart(cart);
+            console.log(cart);
+            console.log(selectedProduct.qty)
         });
-        
+        $(`#qty-${productId}`).val("");
     });
 
-    function addToCart(product){
-        $("#cart-products").append(`
-            <div class="item">
-                <h5>${product.product_name}</h5>
-                <p>${product.department_name}</p>
-                <p>$ ${product.price}</p>
-                
-            <div>
-        `)
+    function addToCart(cart){
+        $("#cart-products").empty();
+        cart.forEach(element =>{
+            $("#cart-products").append(`
+                <div class="item row">
+                    <div class="col-6">
+                        <img src="${element.img_url}" />
+                    </div>
+                    <div class="col-6">
+                        <h5>${element.product_name}</h5>
+                        <p>${element.department_name}</p>
+                        <p>$ ${element.price}</p>
+                    </div>
+                <div>
+            `)
+        }) 
     }
 }); //document.ready
