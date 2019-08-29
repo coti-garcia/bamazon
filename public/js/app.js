@@ -3,7 +3,7 @@ $(document).ready(function(){
         console.log(data);
         data.forEach(element => {
             $("#products").append(`
-            <div class="col-4" id=${element.id}>
+            <div class="col-6 col-md-4" id=${element.id}>
                 <div class="card">
                     <img src="${element.img_url}" class="card-img-top" alt="...">
                     <div class="card-body text-center">
