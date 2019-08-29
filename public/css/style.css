@@ -21,3 +21,30 @@ header{
 .item img{
     width: 100%;
 }
+
+.card-footer input {
+    width: 60px;
+}
+
+.item p{
+    margin-bottom: 0;
+}
+
+#cart-products{
+    margin-bottom: 20px;
+    border-bottom: dashed #ffc107 2px;
+    padding-bottom: 30px;
+}
+
+.total h6{
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    text-align: right;
+}
+.item.row {
+    margin-bottom: 20px;
+}
+
+#place-order{
+    width: 100%;
+}

@@ -17,6 +17,7 @@ $(document).ready(function(){
             if(element.stock_quantity > 0){
                 $(`#${element.id} .card-footer`).append(`
                 <form>
+                <label>Qty:</label>
                 <input id="qty-${element.id}" type="text" name="quantity" />
                 <button value='${element.id}' class='btn btn-warning add-cart' type="submit">Add to cart</button>
                 </form>
@@ -51,7 +52,11 @@ $(document).ready(function(){
 
     $('body').on('click', '#place-order', function(e) {
         console.log("place order!")
-        deleteCart();
+        $.ajax({
+            method: "PUT",
+            url: "/api/products"
+        });
+        emptyCart();
     })
 
 
@@ -68,8 +73,8 @@ $(document).ready(function(){
                     <div class="col-6">
                         <h5>${element.product_name}</h5>
                         <p>${element.department_name}</p>
-                        <p>${element.qty}</p>
-                        <p>$ ${element.price}</p>
+                        <p><strong>Qty:</strong> ${element.qty}</p>
+                        <p><strong>Price:</strong> $${element.price}</p>
                     </div>
                 <div>
             `)
@@ -83,7 +88,7 @@ $(document).ready(function(){
             if(cartArr.length === 0){
                 $("#cart-products").append("<p>Your cart is empty</p>")
             }else{
-                $(".place-order").append("<button id='place-order' class='btn btn-primary' data-toggle='modal' data-target='#exampleModal'>Place Order</button>")
+                $(".place-order").append("<button id='place-order' class='btn btn-primary' data-toggle='modal' data-target='#exampleModal' >Place Order</button>")
             }
             let subTotal = []
             cartArr.forEach(element =>{
@@ -99,20 +104,17 @@ $(document).ready(function(){
 
     getCart(); 
 
-    function updateStock(stock) {
-        $.ajax({
-          method: "PUT",
-          url: "/api/products",
-          data: stock
-        }).then(function() {
-            console.log("send!")
-        });
+    function emptyCart(){
+        $("#cart-products").empty();  
+        $(".total").empty();
+        $(".place-order").empty();
     }
-
     function deleteCart() {
         $.ajax({
           method: "DELETE",
           url: "/api/cart"
         }).then(getCart);
     }
+
+
 }); //document.ready

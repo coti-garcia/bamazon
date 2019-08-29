@@ -15,8 +15,9 @@ module.exports = function(app){
             }
         }).then(function(product){
             if( product.stock_quantity > qty){
-                const { product_name, department_name, price, img_url } = product;
+                const { id, product_name, department_name, price, img_url } = product;
                 const cartItem = {
+                    id,
                     product_name,
                     department_name,
                     price,
@@ -43,16 +44,27 @@ module.exports = function(app){
         res.json(cart);
     });
     app.put("/api/products", function(req, res) {
-        console.log(req.body)
-        db.Product.update(req.body,
-          {
-            where: {
-              id: req.body.id
-            }
-          })
-          .then(function(dbProduct) {
-            res.json(dbProduct);
-          });
+        // console.log(req.body)
+        console.log(cart);
+        let allUpdates = [];
+        cart.forEach(element =>{
+            allUpdates.push(db.Product.findOne(
+                {
+                  where: {
+                    id: element.id
+                  }
+                })
+                .then(function(dbProduct) {
+                  return dbProduct.update({
+                      stock_quantity: dbProduct.stock_quantity - element.qty
+                  });
+                }));
+
+            Promise.all(allUpdates).then(completed => {
+                console.log('finished');
+                cart = [];
+            })
+        })
     });
 
 }
